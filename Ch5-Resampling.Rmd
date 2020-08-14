@@ -1,0 +1,56 @@
+---
+title: "Chapter 5 - Resampling Methods"
+output:
+  html_document:
+    df_print: paged
+---
+
+Load the required packages and data.
+
+```{r}
+library(boot)
+my_data <- load("data\\5.R.RData")
+sample_dataset <- Xy
+Xy <- NULL
+```
+
+Train a simple linear model and print it's summary to get the coefficient for X1
+```{r}
+my_model <- lm(y~X1+X2, data=sample_dataset)
+
+summary(my_model)$coefficients
+```
+
+Plot the variables against each other - each line represents a column from the dataset.
+```{r}
+matplot(sample_dataset,type="l")
+
+```
+
+# Bootstrapping
+
+First we create a function which outputs the estimate for the coefficient of X1. The `index` argument enables the creation of a bootstrapped sample. The `boot` function feeds a vector into `index` which tells it which rows to use from the input dataset.
+```{r}
+extract_coefficient <- function(input_data, index){
+  my_model <- lm(y~X1+X2, data=input_data[index,])
+  my_model$coefficients[2]
+}
+```
+Now we can apply this function to 100 bootstrapped samples
+```{r}
+my_boot <- boot(sample_dataset, extract_coefficient, R=100)
+my_boot
+```
+This boot strap gives a higher estimate of the standard error for X1's coefficient than `summary(my_model)` did. Why is that?
+
+## Block Bootstrapping
+Here we split data into 100 row chunks, then pick 10 chucks with replacement. This is typically done with time series data since each data 
+point is correlated with the points before and after it (- if you were to select points at random then points would no longer be correlated with the points around them (i.e they're not independent). We can implement this quite easily using the `tsboot` (time series bootstrap) function.
+```{r}
+block_boot <- tsboot(tseries = sample_dataset, extract_coefficient, R=100, 
+                   l = 100, # This is the size of each block (100 consecutive data points)
+                   sim = "fixed") # This means used blocks of a fixed length
+block_boot
+```
+This gives us a new estimate for the standard error which is much larger than the SE given when selecting data points at random. Why is that?
+
