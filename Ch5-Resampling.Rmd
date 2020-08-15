@@ -27,6 +27,24 @@ matplot(sample_dataset,type="l")
 
 ```
 
+This plot shows that there's autocorrelation in the dataset - this means that the data is correlated with a lagged version of itself. For example, yesterday's temperature might be a good predictor of today's temperature. We can see this is the plot as smooth, up and down curves. 
+
+Lets look at the plot if we randomly re-order the rows.
+```{r}
+new_index <- sample(1:1000, size = 1000, replace = FALSE)
+sample_dataset2 <- sample_dataset[new_index,]
+matplot(sample_dataset2,type="l")
+
+```
+
+We can use the `acf` function to test the correlation between a variable and lagged versions of itself.
+```{r}
+acf(sample_dataset$X1,  lag.max = 5, plot = FALSE)
+acf(sample_dataset2$X1, lag.max = 5, plot = FALSE)
+```
+
+This very strong autocorrelation effectively reduces our sample size - we think we have 1000 points but each point is very similar to the points before and after it. The summary(my_model) estimates the SE with the assumption that we have 1000 iid data points, causing it to be overconfident and give too small an estimate for the error.
+
 # Bootstrapping
 
 First we create a function which outputs the estimate for the coefficient of X1. The `index` argument enables the creation of a bootstrapped sample. The `boot` function feeds a vector into `index` which tells it which rows to use from the input dataset.
@@ -41,7 +59,7 @@ Now we can apply this function to 100 bootstrapped samples
 my_boot <- boot(sample_dataset, extract_coefficient, R=100)
 my_boot
 ```
-This boot strap gives a higher estimate of the standard error for X1's coefficient than `summary(my_model)` did. Why is that?
+This boot strap gives a higher estimate of the standard error for X1's coefficient than `summary(my_model)` did but it's still making the assumption that the points are iid, causing it to underestimate the standard error.
 
 ## Block Bootstrapping
 Here we split data into 100 row chunks, then pick 10 chucks with replacement. This is typically done with time series data since each data 
@@ -52,5 +70,7 @@ block_boot <- tsboot(tseries = sample_dataset, extract_coefficient, R=100,
                    sim = "fixed") # This means used blocks of a fixed length
 block_boot
 ```
-This gives us a new estimate for the standard error which is much larger than the SE given when selecting data points at random. Why is that?
+This gives us a new estimate for the standard error which is much larger than the SE given when selecting data points at random. Why is that? 
+
+Well the autocorrelation between the points has been preserved since we're taking chunks of points (so the correlation between consecutive points is maintained). 
 
