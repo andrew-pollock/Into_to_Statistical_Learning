@@ -1,0 +1,17 @@
+---
+title: "Chapter 7 - Beyond Linearity"
+output: html_document
+---
+
+
+## Local Regression
+This involves fitting multiple, weighted regression models to the data, where each model only uses the closest s% of observations. The smaller s is, the more flexible the final model will be. Each observation is weighted based on it's distance from the point you're trying to fit a model to. 
+
+You repeat this model over and over for different values of x (effectively sliding your region s across the x axis), computing new linear regressions as you go. 
+
+The lines produced by these linear regressions are combined together to give a (relatively) smooth end result. The result tends to be fairly similar to a cubic smoothing spline.
+
+The technique works similarly for 2 or 3 variables, but then it starts to struggle - it's difficult to find "close" observations in high dimensional space.
+
+
+## Generalized Linear Models
