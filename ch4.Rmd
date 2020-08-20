@@ -1,0 +1,79 @@
+---
+title: "ch4"
+output: html_document
+---
+
+
+# Chapter 4 - Classification
+
+## Metrics for Classification
+Accuracy  
+ROC  
+AUC
+
+
+
+## Logistic Regression
+In order to ensure that our prediction for the probability $p(X) = Pr(Y = 1|X)$  is between 0 and 1, we use this form:
+
+$$p(X) = \frac{e^{\beta _{0}+\beta _{1}X}}{1+e^{\beta _{0}+\beta _{1}X}}$$
+
+We can see that regardless of the values of beta, the result must be between 0 and 1 since the denominator will always be 1 larger than the numerator.  
+This can be rewritten in another form called the `log odds`:
+
+$$log\left (\frac{p(X)}{1 - p(X)}\right ) = \beta _{0}+\beta _{1}X$$
+
+To derive this, we simply divide both sides by 1-itself, then take the log. The RHS simplifies down to just $e^{\beta _{0}+\beta _{1}X}$, which simplifies to the above formula when we take natural logs.  
+We select the values of $\beta$ which maximise the likelihood of getting our observed data. The likelihood of parameters $\left ( \beta _{0}, \beta _{1}\right )$ are given by this equation:
+
+$$\iota \left ( \beta _{0}, \beta _{1}\right ) = \prod _{i:y_{i}=1} p(x_{i})\cdot \prod _{i:y_{i}=0} (1-p(x_{i}))$$
+
+The RHS here is just the number of 1's multiplied by their probability or occuring, times the number of 0's multiplied by their probability of occuring. We can get the probability of $p(x_{i})$ occurring for a specific set of $\beta$ by using the logistic regression formula for $p(x)$. 
+
+If you oversample one of your classes (for example, because it rarely occurs) then your coefficients will be correct, you just need to adjust your constant term $\beta _{0}$ based on the true prior ($\pi$) and the prior in your sample ($\tilde{\pi}$).
+
+
+## Linear (Gaussian?) Discriminant Analysis
+In discriminant analysis, the idea is that we model the distribution of variable x within each of the classes. We can then use Bayes Theorem to calculate $Pr(Y|X)$ (the probability of being in class Y, given we've observed X) and classify the observation to the class where the probability is largest for the observed X.  
+
+When is Discriminant Analysis useful?  
+
+* When classes are well separated - in these cases the coefficients for logistic regression become unstable. If classes can be perfectly separated then logistic regression's coefficients will be infinity.
+* If your sample is small and your variables X are approx. normal within in class, then LDA is also more stable than logistic regression
+* Useful when you have more than 2 classes LDA provides nice, low dimensional views of the splits 
+* Finally, if our population model is correct (for the distribution of X) then this is effectively Bayes Rule, which is the theoretical best possible model
+
+As a reminder, this is what Bayes Theorem looks like:
+
+$$Pr(Y=k|X=x) = \frac{Pr(X=x|Y=k)\cdot Pr(Y=k)}{Pr(X=x)}$$
+We know $Pr(X|Y)$ since we know the distribution of X within the class k. $Pr(Y=k)$ is simply the prior probability of class k (i.e the proportion of all observations which are in k). $Pr(X=x)$ is just the probability of x across all classes. So for discriminant analysis, we can rewrite it as follows:
+
+$$Pr(Y=k|X=x) = \frac{f_{k}(x)\cdot \pi _{k}}{\sum _{l=1}^{K} \pi _{l}f_{l}(x)}$$
+
+This is identical to the first formula but we've rewritten some terms. $f_{k}(x)$ is the density for X in class k, it tells us the $Pr(X=x|Y=k)$. $\pi _{k}$ is the prior probability of class k. The bottom term sums up the densities of X in each class l, multiplied by the prior probability of that class ($\pi _{l}$).
+
+
+
+
+## Quadratic Discriminant Analysis
+
+
+
+## Naive Bayes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
