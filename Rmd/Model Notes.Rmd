@@ -3,35 +3,34 @@ title: "Model Overview"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+<!-- latex generator:  https://www.codecogs.com/latex/eqneditor.php  --> 
+
+[Go to slide 1](#lasso)
 
 # Chapter 5 - Resampling
 
 ## Bootstrapping
-The bootstrap involves resampling with replacement from your sample. Effectively you treat your sample as a representation of the population and the generate more samples by selecting from it. 
+The bootstrap involves resampling with replacement from your sample. Effectively you treat your sample as a representation of the population and the generate more samples by selecting from it.  
 Generally used to get a better idea of the distribution of a parameter. For example: your sample might have a mean of 80. If you generate 1000 bootstrapped samples from that sample then their mean will vary slightly around 80. The size of this variance around 80 gives you an idea of the standard error of the mean.
 
 ## Cross Validation
-Split your data into k folds. Train your model on all but 1 fold, assess it on the held out fold. Repeat this for each fold in turn, then average out the errors.
+Split your data into k folds. Train your model on all but 1 fold, assess it on the held out fold. Repeat this for each fold in turn, then average out the errors.  
 Typical values of k are 5 or 10.
 
 
 # Chapter 6 - Variable Selection
 
 ## Forward & Backward Stepwise Regression
-Start with no variables. Test the P possible variables and add the one which improves RSS (or R^2) by the most. Then test the P-1 remaining variables to see which one improves RSS the most. Repeast until all variables have been added. 
+Start with no variables. Test the P possible variables and add the one which improves RSS (or R^2) by the most. Then test the P-1 remaining variables to see which one improves RSS the most. Repeat until all variables have been added. 
 The models with more variables will always perform better on the training data, so use CV or an adjustment method (Cp, AIC, BIC, Adjusted R^2) to select the optimal number of variables.
 
 Backwards stepwise is the same process but in reverse (start with all variables and remove the worst). 
 
 
 ## Ridge Regression
-Estimate the coefficients to use by minimising a slightly different quantity (instead of just RSS):  
+Estimate the coefficients to use by minimising a slightly different quantity (instead of just RSS): 
 
-$RSS + \lambda \sum_{j=1}^{p} \beta_{j}^{2}$
-
+$$RSS + \lambda \sum_{j=1}^{p} \beta_{j}^{2}$$
 This is referred to as an $\iota_{2}$ (ell 2) penalty.  
 In other words, you square each coefficient, add them together, multiply that by a parameter $\lambda$ and add it to the RSS. Clearly very large coefficients will be more heavily penalised here due to the squaring. This also means that coefficients are unlikely to be exactly 0. With $\lambda$ = 0, this is equivalent to least squares regression. As $\lambda \rightarrow \infty$ the impact of the shrinkage term increases and the coefficients tend towards 0.  
 *Note: Variables will need to be standardised prior to model fitting to ensure that the coefficients are comparable. Otherwise the size of the coefficients will depend on the units used.*
@@ -39,9 +38,18 @@ In other words, you square each coefficient, add them together, multiply that by
 ## Lasso 
 This is similar to ridge regression, but uses the absolute sum of the coefficients rather than the sum of their squares:
 
-$RSS + \lambda \sum_{j=1}^{p} \left |\beta_{j}\right |$
+$$RSS + \lambda \sum_{j=1}^{p} \left |\beta_{j}\right |$$
 
 This is referred to as an $\iota_{1}$ (ell 1) penalty.  
 Since we aren't squaring the coefficients, it's much more likely that we will reduce some of them to 0 as $\lambda$ get larger. Because of this, lasso effectively performs a type of variable selection.
+
+
+For both these methods, we get different values for the coefficients depending on our chosen value for $\lambda$. We repeat this for lots of possible values of $\lambda$, then use cross validation to use the value of $\lambda$ which minimises our test MSE.
+
+
+## Dimension Reduction & Principal Components Regression
+
+
+
 
 

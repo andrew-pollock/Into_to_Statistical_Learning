@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>ch4</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">ch4</h1>
+
+</div>
+
+
+<div id="chapter-4---classification" class="section level1">
+<h1>Chapter 4 - Classification</h1>
+<div id="metrics-for-classification" class="section level2">
+<h2>Metrics for Classification</h2>
+<p>Accuracy<br />
+ROC<br />
+AUC</p>
+</div>
+<div id="logistic-regression" class="section level2">
+<h2>Logistic Regression</h2>
+<p>In order to ensure that our prediction for the probability <span class="math inline">\(p(X) = Pr(Y = 1|X)\)</span> is between 0 and 1, we use this form:</p>
+<p><span class="math display">\[p(X) = \frac{e^{\beta _{0}+\beta _{1}X}}{1+e^{\beta _{0}+\beta _{1}X}}\]</span></p>
+<p>We can see that regardless of the values of beta, the result must be between 0 and 1 since the denominator will always be 1 larger than the numerator.<br />
+This can be rewritten in another form called the <code>log odds</code>:</p>
+<p><span class="math display">\[log\left (\frac{p(X)}{1 - p(X)}\right ) = \beta _{0}+\beta _{1}X\]</span></p>
+<p>To derive this, we simply divide both sides by 1-itself, then take the log. The RHS simplifies down to just <span class="math inline">\(e^{\beta _{0}+\beta _{1}X}\)</span>, which simplifies to the above formula when we take natural logs.<br />
+We select the values of <span class="math inline">\(\beta\)</span> which maximise the likelihood of getting our observed data. The likelihood of parameters <span class="math inline">\(\left ( \beta _{0}, \beta _{1}\right )\)</span> are given by this equation:</p>
+<p><span class="math display">\[\iota \left ( \beta _{0}, \beta _{1}\right ) = \prod _{i:y_{i}=1} p(x_{i})\cdot \prod _{i:y_{i}=0} (1-p(x_{i}))\]</span></p>
+<p>The RHS here is just the number of 1’s multiplied by their probability or occuring, times the number of 0’s multiplied by their probability of occuring. We can get the probability of <span class="math inline">\(p(x_{i})\)</span> occurring for a specific set of <span class="math inline">\(\beta\)</span> by using the logistic regression formula for <span class="math inline">\(p(x)\)</span>.</p>
+<p>If you oversample one of your classes (for example, because it rarely occurs) then your coefficients will be correct, you just need to adjust your constant term <span class="math inline">\(\beta _{0}\)</span> based on the true prior (<span class="math inline">\(\pi\)</span>) and the prior in your sample (<span class="math inline">\(\tilde{\pi}\)</span>).</p>
+</div>
+<div id="linear-gaussian-discriminant-analysis" class="section level2">
+<h2>Linear (Gaussian?) Discriminant Analysis</h2>
+<p>In discriminant analysis, the idea is that we model the distribution of variable x within each of the classes. We can then use Bayes Theorem to calculate <span class="math inline">\(Pr(Y|X)\)</span> (the probability of being in class Y, given we’ve observed X) and classify the observation to the class where the probability is largest for the observed X.</p>
+<p>When is Discriminant Analysis useful?</p>
+<ul>
+<li>When classes are well separated - in these cases the coefficients for logistic regression become unstable. If classes can be perfectly separated then logistic regression’s coefficients will be infinity.</li>
+<li>If your sample is small and your variables X are approx. normal within in class, then LDA is also more stable than logistic regression</li>
+<li>Useful when you have more than 2 classes LDA provides nice, low dimensional views of the splits</li>
+<li>Finally, if our population model is correct (for the distribution of X) then this is effectively Bayes Rule, which is the theoretical best possible model</li>
+</ul>
+<p>As a reminder, this is what Bayes Theorem looks like:</p>
+<p><span class="math display">\[Pr(Y=k|X=x) = \frac{Pr(X=x|Y=k)\cdot Pr(Y=k)}{Pr(X=x)}\]</span> We know <span class="math inline">\(Pr(X|Y)\)</span> since we know the distribution of X within the class k. <span class="math inline">\(Pr(Y=k)\)</span> is simply the prior probability of class k (i.e the proportion of all observations which are in k). <span class="math inline">\(Pr(X=x)\)</span> is just the probability of x across all classes. So for discriminant analysis, we can rewrite it as follows:</p>
+<p><span class="math display">\[Pr(Y=k|X=x) = \frac{f_{k}(x)\cdot \pi _{k}}{\sum _{l=1}^{K} \pi _{l}f_{l}(x)}\]</span></p>
+<p>This is identical to the first formula but we’ve rewritten some terms. <span class="math inline">\(f_{k}(x)\)</span> is the density for X in class k, it tells us the <span class="math inline">\(Pr(X=x|Y=k)\)</span>. <span class="math inline">\(\pi _{k}\)</span> is the prior probability of class k. The bottom term sums up the densities of X in each class l, multiplied by the prior probability of that class (<span class="math inline">\(\pi _{l}\)</span>).</p>
+</div>
+<div id="quadratic-discriminant-analysis" class="section level2">
+<h2>Quadratic Discriminant Analysis</h2>
+</div>
+<div id="naive-bayes" class="section level2">
+<h2>Naive Bayes</h2>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
