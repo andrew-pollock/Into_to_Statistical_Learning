@@ -9,7 +9,7 @@ Load the required packages and data.
 
 ```{r}
 library(boot)
-my_data <- load("data\\5.R.RData")
+my_data <- load("..\\data\\5.R.RData")
 sample_dataset <- Xy
 Xy <- NULL
 ```

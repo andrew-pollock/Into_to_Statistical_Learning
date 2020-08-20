@@ -1,0 +1,19 @@
+---
+title: "Chapter 8 - Tree-Based Methods"
+output: html_document
+---
+
+
+"Trees aren't good for very small datasets with high noise to signal, which is what social science often is. They don't work well in that context."
+
+
+
+
+
+
+
+
+
+
+
+
