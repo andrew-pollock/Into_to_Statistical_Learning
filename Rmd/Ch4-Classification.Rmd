@@ -31,7 +31,7 @@ The RHS here is just the number of 1's multiplied by their probability or occuri
 If you oversample one of your classes (for example, because it rarely occurs) then your coefficients will be correct, you just need to adjust your constant term $\beta _{0}$ based on the true prior ($\pi$) and the prior in your sample ($\tilde{\pi}$).
 
 
-## Linear (Gaussian?) Discriminant Analysis
+## Linear (Gaussian) Discriminant Analysis
 In discriminant analysis, the idea is that we model the distribution of variable x within each of the classes. We can then use Bayes Theorem to calculate $Pr(Y|X)$ (the probability of being in class Y, given we've observed X) and classify the observation to the class where the probability is largest for the observed X.  
 
 When is Discriminant Analysis useful?  
@@ -50,7 +50,11 @@ $$Pr(Y=k|X=x) = \frac{f_{k}(x)\cdot \pi _{k}}{\sum _{l=1}^{K} \pi _{l}f_{l}(x)}$
 
 This is identical to the first formula but we've rewritten some terms. $f_{k}(x)$ is the density for X in class k, it tells us the $Pr(X=x|Y=k)$. $\pi _{k}$ is the prior probability of class k. The bottom term sums up the densities of X in each class l, multiplied by the prior probability of that class ($\pi _{l}$).
 
+Typically we assume that variable $x$ is normally distributed within each class (hence Gaussian). So if we know the mean $\mu$ and variance $\sigma^{2}$ of $x$ within a class then we can use the normal distribution to calculate the probability of a specific value of $x$ occurring i.e $f_{k}(x)$.
 
+For the sake of convenience, we assume that the variance $\sigma^{2}$ of $x$ is the same for each class. This results in the final term which dictates the decision boundaries being linear in $x$.
+
+When we're dealing with multiple predictors (instead of just x) we effectively just replace the variance $\sigma^{2}$ with the $p$ x $p$ covariance matrix $\sum$. 
 
 
 ## Quadratic Discriminant Analysis

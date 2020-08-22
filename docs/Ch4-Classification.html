@@ -201,7 +201,7 @@ We select the values of <span class="math inline">\(\beta\)</span> which maximis
 <p>If you oversample one of your classes (for example, because it rarely occurs) then your coefficients will be correct, you just need to adjust your constant term <span class="math inline">\(\beta _{0}\)</span> based on the true prior (<span class="math inline">\(\pi\)</span>) and the prior in your sample (<span class="math inline">\(\tilde{\pi}\)</span>).</p>
 </div>
 <div id="linear-gaussian-discriminant-analysis" class="section level2">
-<h2>Linear (Gaussian?) Discriminant Analysis</h2>
+<h2>Linear (Gaussian) Discriminant Analysis</h2>
 <p>In discriminant analysis, the idea is that we model the distribution of variable x within each of the classes. We can then use Bayes Theorem to calculate <span class="math inline">\(Pr(Y|X)\)</span> (the probability of being in class Y, given we’ve observed X) and classify the observation to the class where the probability is largest for the observed X.</p>
 <p>When is Discriminant Analysis useful?</p>
 <ul>
@@ -214,6 +214,9 @@ We select the values of <span class="math inline">\(\beta\)</span> which maximis
 <p><span class="math display">\[Pr(Y=k|X=x) = \frac{Pr(X=x|Y=k)\cdot Pr(Y=k)}{Pr(X=x)}\]</span> We know <span class="math inline">\(Pr(X|Y)\)</span> since we know the distribution of X within the class k. <span class="math inline">\(Pr(Y=k)\)</span> is simply the prior probability of class k (i.e the proportion of all observations which are in k). <span class="math inline">\(Pr(X=x)\)</span> is just the probability of x across all classes. So for discriminant analysis, we can rewrite it as follows:</p>
 <p><span class="math display">\[Pr(Y=k|X=x) = \frac{f_{k}(x)\cdot \pi _{k}}{\sum _{l=1}^{K} \pi _{l}f_{l}(x)}\]</span></p>
 <p>This is identical to the first formula but we’ve rewritten some terms. <span class="math inline">\(f_{k}(x)\)</span> is the density for X in class k, it tells us the <span class="math inline">\(Pr(X=x|Y=k)\)</span>. <span class="math inline">\(\pi _{k}\)</span> is the prior probability of class k. The bottom term sums up the densities of X in each class l, multiplied by the prior probability of that class (<span class="math inline">\(\pi _{l}\)</span>).</p>
+<p>Typically we assume that variable <span class="math inline">\(x\)</span> is normally distributed within each class (hence Gaussian). So if we know the mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^{2}\)</span> of <span class="math inline">\(x\)</span> within a class then we can use the normal distribution to calculate the probability of a specific value of <span class="math inline">\(x\)</span> occurring i.e <span class="math inline">\(f_{k}(x)\)</span>.</p>
+<p>For the sake of convenience, we assume that the variance <span class="math inline">\(\sigma^{2}\)</span> of <span class="math inline">\(x\)</span> is the same for each class. This results in the final term which dictates the decision boundaries being linear in <span class="math inline">\(x\)</span>.</p>
+<p>When we’re dealing with multiple predictors (instead of just x) we effectively just replace the variance <span class="math inline">\(\sigma^{2}\)</span> with the <span class="math inline">\(p\)</span> x <span class="math inline">\(p\)</span> covariance matrix <span class="math inline">\(\sum\)</span>.</p>
 </div>
 <div id="quadratic-discriminant-analysis" class="section level2">
 <h2>Quadratic Discriminant Analysis</h2>

@@ -183,88 +183,15 @@ summary {
 </div>
 
 
-<p>Load the required packages and data.</p>
-<pre class="r"><code>library(boot)
-my_data &lt;- load(&quot;..\\data\\5.R.RData&quot;)
-sample_dataset &lt;- Xy
-Xy &lt;- NULL</code></pre>
-<p>Train a simple linear model and print it’s summary to get the coefficient for X1</p>
-<pre class="r"><code>my_model &lt;- lm(y~X1+X2, data=sample_dataset)
-
-summary(my_model)$coefficients</code></pre>
-<pre><code>##              Estimate Std. Error   t value     Pr(&gt;|t|)
-## (Intercept) 0.2658349 0.01988032 13.371758 1.249278e-37
-## X1          0.1453263 0.02593295  5.603925 2.711026e-08
-## X2          0.3133670 0.02922671 10.721938 1.843565e-25</code></pre>
-<p>Plot the variables against each other - each line represents a column from the dataset.</p>
-<pre class="r"><code>matplot(sample_dataset,type=&quot;l&quot;)</code></pre>
-<p><img src="Ch5-Resampling_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>This plot shows that there’s autocorrelation in the dataset - this means that the data is correlated with a lagged version of itself. For example, yesterday’s temperature might be a good predictor of today’s temperature. We can see this is the plot as smooth, up and down curves.</p>
-<p>Lets look at the plot if we randomly re-order the rows.</p>
-<pre class="r"><code>new_index &lt;- sample(1:1000, size = 1000, replace = FALSE)
-sample_dataset2 &lt;- sample_dataset[new_index,]
-matplot(sample_dataset2,type=&quot;l&quot;)</code></pre>
-<p><img src="Ch5-Resampling_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>We can use the <code>acf</code> function to test the correlation between a variable and lagged versions of itself.</p>
-<pre class="r"><code>acf(sample_dataset$X1,  lag.max = 5, plot = FALSE)</code></pre>
-<pre><code>## 
-## Autocorrelations of series &#39;sample_dataset$X1&#39;, by lag
-## 
-##     0     1     2     3     4     5 
-## 1.000 0.997 0.993 0.988 0.981 0.974</code></pre>
-<pre class="r"><code>acf(sample_dataset2$X1, lag.max = 5, plot = FALSE)</code></pre>
-<pre><code>## 
-## Autocorrelations of series &#39;sample_dataset2$X1&#39;, by lag
-## 
-##      0      1      2      3      4      5 
-##  1.000  0.003 -0.014  0.025 -0.030 -0.052</code></pre>
-<p>This very strong autocorrelation effectively reduces our sample size - we think we have 1000 points but each point is very similar to the points before and after it. The summary(my_model) estimates the SE with the assumption that we have 1000 iid data points, causing it to be overconfident and give too small an estimate for the error.</p>
-<div id="bootstrapping" class="section level1">
-<h1>Bootstrapping</h1>
-<p>First we create a function which outputs the estimate for the coefficient of X1. The <code>index</code> argument enables the creation of a bootstrapped sample. The <code>boot</code> function feeds a vector into <code>index</code> which tells it which rows to use from the input dataset.</p>
-<pre class="r"><code>extract_coefficient &lt;- function(input_data, index){
-  my_model &lt;- lm(y~X1+X2, data=input_data[index,])
-  my_model$coefficients[2]
-}</code></pre>
-<p>Now we can apply this function to 100 bootstrapped samples</p>
-<pre class="r"><code>my_boot &lt;- boot(sample_dataset, extract_coefficient, R=100)
-my_boot</code></pre>
-<pre><code>## 
-## ORDINARY NONPARAMETRIC BOOTSTRAP
-## 
-## 
-## Call:
-## boot(data = sample_dataset, statistic = extract_coefficient, 
-##     R = 100)
-## 
-## 
-## Bootstrap Statistics :
-##      original       bias    std. error
-## t1* 0.1453263 -0.007617779  0.02884282</code></pre>
-<p>This boot strap gives a higher estimate of the standard error for X1’s coefficient than <code>summary(my_model)</code> did but it’s still making the assumption that the points are iid, causing it to underestimate the standard error.</p>
-<div id="block-bootstrapping" class="section level2">
-<h2>Block Bootstrapping</h2>
-<p>Here we split data into 100 row chunks, then pick 10 chucks with replacement. This is typically done with time series data since each data point is correlated with the points before and after it (- if you were to select points at random then points would no longer be correlated with the points around them (i.e they’re not independent). We can implement this quite easily using the <code>tsboot</code> (time series bootstrap) function.</p>
-<pre class="r"><code>block_boot &lt;- tsboot(tseries = sample_dataset, extract_coefficient, R=100, 
-                   l = 100, # This is the size of each block (100 consecutive data points)
-                   sim = &quot;fixed&quot;) # This means used blocks of a fixed length
-block_boot</code></pre>
-<pre><code>## 
-## BLOCK BOOTSTRAP FOR TIME SERIES
-## 
-## Fixed Block Length of 100 
-## 
-## Call:
-## tsboot(tseries = sample_dataset, statistic = extract_coefficient, 
-##     R = 100, l = 100, sim = &quot;fixed&quot;)
-## 
-## 
-## Bootstrap Statistics :
-##      original      bias    std. error
-## t1* 0.1453263 0.005105024   0.2058791</code></pre>
-<p>This gives us a new estimate for the standard error which is much larger than the SE given when selecting data points at random. Why is that?</p>
-<p>Well the autocorrelation between the points has been preserved since we’re taking chunks of points (so the correlation between consecutive points is maintained).</p>
+<div id="bootstrapping" class="section level2">
+<h2>Bootstrapping</h2>
+<p>The bootstrap involves resampling with replacement from your sample. Effectively you treat your sample as a representation of the population and the generate more samples by selecting from it.<br />
+Generally used to get a better idea of the distribution of a parameter. For example: your sample might have a mean of 80. If you generate 1000 bootstrapped samples from that sample then their mean will vary slightly around 80. The size of this variance around 80 gives you an idea of the standard error of the mean.</p>
 </div>
+<div id="cross-validation" class="section level2">
+<h2>Cross Validation</h2>
+<p>Split your data into k folds. Train your model on all but 1 fold, assess it on the held out fold. Repeat this for each fold in turn, then average out the errors.<br />
+Typical values of k are 5 or 10.</p>
 </div>
 
 
